@@ -1,10 +1,74 @@
-import requests
 import json
 import openai
-import pandas as pd
+import logging
 import datetime
+import pandas as pd
+
+FORMAT = '[%(asctime)s]%(levelname) %(message)s'
+logging.basicConfig(format=FORMAT)
+
+
+def get_risk(doc):
+    '''
+    Get risk assessment based on given documents.
+
+    Args:
+        documents (list): List of documents for risk assessment.
+
+    Returns:
+        str: Risk assessment response in JSON format.
+    '''
+    client = openai.OpenAI(
+        api_key="sk-ioPnaxVR6WBuFouFvkURqw",
+        base_url="https://llms.azurewebsites.net"
+    )
+    try:
+        response = client.chat.completions.create(model="gpt-3.5", messages=[
+            {
+                "role": "user",
+                'content': f"Based on the following articles, assess risks in terms of [trade tensions, political instability, economic sanctions, natural disasters, conflicts, and regulatory changes] for all countries mentioned in the articles. Only respond with a list of countries and their risk {doc}. Respond in JSON format."
+            }
+        ])
+        return response.choices[0].message.content
+    except Exception as e:
+        logging.error(f"Error occured while getting response: {e}")
+        return None
+
+
+def extract_risk_data(risk, titles, date_string):
+    '''
+    Extract risk data and create DataFrame.
+
+    Args:
+        risk (dict): Dictionary containing risk assessment.
+        titles (list): List of titles of news articles.
+        date_string (str): Date string in the format 'YYYY-MM-DD'.
+
+    Returns:
+        pd.DataFrame: DataFrame containing risk data.
+    '''
+    # Initialize lists to store data
+    dates = []
+    countries = []
+    risks = []
+    titles_list = []
+    # Iterate over the dictionary
+    for country, risk_list in risk.items():
+        dates.extend([date_string] * len(risk_list))
+        countries.extend([country] * len(risk_list))
+        risks.extend(risk_list)
+        titles_list.extend([titles] * len(risk_list))
+    # Create DataFrame
+    return pd.DataFrame({
+        'date': dates,
+        'country': countries,
+        'risk': risks,
+        'title': titles_list
+    })
+
+
 def main():
-    """Process news data to assess risks and save results."""
+    '''Process news data to assess risks and save results.'''
     # Set date filter
     date_filter = datetime.date(2022, 3, 11)
     date_string = "2022-03-11"
@@ -27,44 +91,7 @@ def main():
     out = extract_risk_data(risk, test['Title'].to_list(), date_string)
     # Save DataFrame to CSV file
     out.to_csv(f"{date_string}-output.csv", index=False, sep=";")
-def get_risk(doc):
-    """Get risk assessment based on given document."""
-    client = openai.OpenAI(
-        api_key="sk-ioPnaxVR6WBuFouFvkURqw",
-        base_url="https://llms.azurewebsites.net"
-    )
-    try:
-        response = client.chat.completions.create(model="gpt-3.5", messages=[
-            {
-                "role": "user",
-                'content': f"Based on the following articles, assess risks in terms of [trade tensions, political instability, economic sanctions, natural disasters, conflicts, and regulatory changes] for all countries mentioned in the articles. Only respond with a list of countries and their risk {doc}. Respond in JSON format."
-            }
-        ])
-        return response.choices[0].message.content
-    except Exception as e:
-        print(f"Error: {e}")
-        return "N/D"
-def extract_risk_data(risk, titles, date_string):
-    """Extract risk data and create DataFrame."""
-    # Initialize lists to store data
-    dates = []
-    countries = []
-    risks = []
-    titles_list = []
-    # Iterate over the dictionary
-    for country, risk_list in risk.items():
-        dates.extend([date_string] * len(risk_list))
-        countries.extend([country] * len(risk_list))
-        risks.extend(risk_list)
-        titles_list.extend([titles] * len(risk_list))
-    # Create DataFrame
-    out = pd.DataFrame({
-        'date': dates,
-        'country': countries,
-        'risk': risks,
-        'title': titles_list
-    })
-    return out
+
+
 if __name__ == "__main__":
     main()
-

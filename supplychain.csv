@@ -1,7 +1,0 @@
-supChainName,location,typeOfTransport,typeOfRisk,dateOfOccurence,rateOfRisk,trustFactor
-Bosch Transmitter,India,ship,strike,02/02/2024,90,80
-Bosch Transmitter,Italy,truck,strike,02/02/2024,90,80
-Bosch Transmitter,Germany,truck,strike,02/02/2024,90,80
-Bosch Batterie,Vietnam,ship,strike,02/02/2024,90,80
-Bosch Batterie,Spain,truck,strike,02/02/2024,90,80
-Bosch Batterie,Germany,truck,strike,02/02/2024,90,80
