@@ -5,3 +5,6 @@ tqdm
 python-dateutil
 countryinfo
 openai
+fastapi
+ibm-watson
+ibm-watsonx-ai
