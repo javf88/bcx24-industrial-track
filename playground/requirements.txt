@@ -1,7 +1,0 @@
-deepsearch-toolkit
-numerize
-pandas
-tqdm
-python-dateutil
-countryinfo
-openai
