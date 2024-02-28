@@ -1,12 +1,11 @@
-# bcx24-industrial-track
+# SupChainers Trust
 
-This is the repo for our coding challenge at BCX24, digital industrial track. It
-is divided into two main components, whose implementation are stored in their
-corresponding folders.
+A team that offers an AI-powered solution solution to shield against cyberthreats.
 
-* ML Model
-* Visualization
+# GeoGuardian
+
+- logo here
 
 # For developers
 
-There is an extra folder, the playground, where devs are welcome to add their snippets.
+GitHub repo <https://github.com/javf88/bcx24-industrial-track>
